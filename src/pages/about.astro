@@ -1,0 +1,20 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="关于" description="关于这个 Astro 博客骨架">
+	<section class="section-card prose">
+		<h1>关于这个版本</h1>
+		<p>
+			这是一个偏向内容优先的 Astro 博客基础版，目标不是做花哨展示，而是先把结构、文章页、
+			归档页、评论能力和后续可扩展性打稳。
+		</p>
+		<p>
+			你可以继续往里补充文章分类、标签页、友情链接、摄影页面，或者接上你现有的管理后台。
+		</p>
+		<p>
+			评论系统默认预留 Waline，只要把服务端部署好，再填上 `PUBLIC_WALINE_SERVER_URL`，
+			就能启用昵称、邮箱、网址，以及回复邮件提醒。
+		</p>
+	</section>
+</MainLayout>

@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import PostList from '../components/PostList.astro';
+import SearchToolbar from '../components/SearchToolbar.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<div class="page-shell">
+			<Sidebar />
+			<main class="page-content">
+				<SearchToolbar />
+
+				<section class="section-card">
+					<div class="section-card__head">
+						<h2>最近更新</h2>
+						<a href="/blog">查看全部</a>
+					</div>
+					<PostList posts={posts} />
+				</section>
+			</main>
+		</div>
+	</body>
+</html>

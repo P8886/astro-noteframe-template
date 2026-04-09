@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Sidebar from '../components/Sidebar.astro';
+import TwikooComments from '../components/TwikooComments.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, tags = [], heroImage } = Astro.props;
+const typeLabel = Astro.props.type === 'short' ? '说说' : '笔记';
+---
+
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<div class="page-shell">
+			<Sidebar />
+			<main class="page-content">
+				<article class="article-card">
+					<header class="article-card__header">
+						<p class="article-card__eyebrow">{typeLabel}</p>
+						<h1>{title}</h1>
+						<p class="article-card__desc">{description}</p>
+						<div class="article-card__meta">
+							<span><FormattedDate date={pubDate} showTime={true} /></span>
+							{
+								updatedDate && (
+									<span>更新于 <FormattedDate date={updatedDate} showTime={true} /></span>
+								)
+							}
+						</div>
+						{
+							tags.length > 0 && (
+								<div class="article-card__tags">
+									{tags.map((tag: string) => <span>{tag}</span>)}
+								</div>
+							)
+						}
+					</header>
+					{
+						heroImage && (
+							<div class="article-card__cover">
+								<img src={heroImage.src} alt={title} />
+							</div>
+						)
+					}
+					<div class="prose">
+						<slot />
+					</div>
+				</article>
+				<TwikooComments />
+			</main>
+		</div>
+	</body>
+</html>

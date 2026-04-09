@@ -1,0 +1,102 @@
+---
+import { NAV_LINKS, SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_EMAIL, SITE_SUBTITLE, SITE_TAGLINE, SITE_TITLE, SOCIAL_LINKS } from '../consts';
+---
+
+<div class="mobile-bar">
+	<button class="icon-button" type="button" data-sidebar-toggle aria-label="打开菜单">
+		<span></span>
+		<span></span>
+	</button>
+	<a class="mobile-bar__brand" href="/">{SITE_TITLE}</a>
+	<button class="icon-button icon-button--theme" type="button" data-theme-toggle aria-label="切换夜间模式">
+		<svg viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" fill="currentColor"></path>
+		</svg>
+	</button>
+</div>
+
+<div class="sidebar-backdrop" data-sidebar-backdrop></div>
+<aside class="sidebar" data-sidebar>
+	<div class="sidebar__inner">
+		<div class="sidebar__profile">
+			<img class="sidebar__avatar" src={SITE_AVATAR} alt={SITE_AUTHOR} />
+			<div>
+				<a class="sidebar__brand" href="/">{SITE_AUTHOR}</a>
+				<p class="sidebar__tagline">{SITE_TAGLINE}</p>
+			</div>
+		</div>
+		<p class="sidebar__subtitle">{SITE_SUBTITLE}</p>
+		<p class="sidebar__desc">{SITE_DESCRIPTION}</p>
+		<nav class="sidebar__nav" aria-label="Primary">
+			{
+				NAV_LINKS.map((item) => (
+					<a class:list={['sidebar__link', { active: Astro.url.pathname === item.href }]} href={item.href}>
+						<span class="sidebar__icon" aria-hidden="true">
+							{
+								item.icon === 'home' && (
+									<svg viewBox="0 0 24 24"><path d="M4.5 10.5 12 4.5l7.5 6V19a1.5 1.5 0 0 1-1.5 1.5h-3.75V15h-4.5v5.5H6A1.5 1.5 0 0 1 4.5 19Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+								)
+							}
+							{
+								item.icon === 'note' && (
+									<svg viewBox="0 0 24 24"><path d="M7 4.5h10A1.5 1.5 0 0 1 18.5 6v12A1.5 1.5 0 0 1 17 19.5H7A1.5 1.5 0 0 1 5.5 18V6A1.5 1.5 0 0 1 7 4.5Zm3 4h6m-6 4h6m-6 4h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+								)
+							}
+							{
+								item.icon === 'chat' && (
+									<svg viewBox="0 0 24 24"><path d="M6 8.5A3.5 3.5 0 0 1 9.5 5h5A3.5 3.5 0 0 1 18 8.5v1A3.5 3.5 0 0 1 14.5 13H12l-3.5 2v-2H9.5A3.5 3.5 0 0 1 6 9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+								)
+							}
+							{
+								item.icon === 'archive' && (
+									<svg viewBox="0 0 24 24"><path d="M6 7h12M6 12h12M6 17h12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+								)
+							}
+							{
+								item.icon === 'user' && (
+									<svg viewBox="0 0 24 24"><path d="M12 11.5a3.5 3.5 0 1 0-3.5-3.5 3.5 3.5 0 0 0 3.5 3.5Zm-6.5 8a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+								)
+							}
+						</span>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+		<div class="sidebar__social">
+			{
+				SOCIAL_LINKS.map((item) => (
+					<a href={item.href} target={item.href.startsWith('mailto:') || item.href.startsWith('/') ? undefined : '_blank'} rel="noreferrer">{item.label}</a>
+				))
+			}
+		</div>
+		<div class="sidebar__footer">
+			<button class="theme-switch" type="button" data-theme-toggle>
+				<span>切换颜色</span>
+			</button>
+		</div>
+	</div>
+</aside>
+
+<script is:inline>
+	const root = document.documentElement;
+	const applyTheme = (theme) => {
+		root.dataset.theme = theme;
+		localStorage.setItem('theme', theme);
+	};
+	document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+		button.addEventListener('click', () => {
+			applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+		});
+	});
+	const sidebar = document.querySelector('[data-sidebar]');
+	const backdrop = document.querySelector('[data-sidebar-backdrop]');
+	const toggleSidebar = () => {
+		sidebar?.classList.toggle('is-open');
+		backdrop?.classList.toggle('is-open');
+	};
+	document.querySelectorAll('[data-sidebar-toggle]').forEach((button) => {
+		button.addEventListener('click', toggleSidebar);
+	});
+	backdrop?.addEventListener('click', toggleSidebar);
+</script>

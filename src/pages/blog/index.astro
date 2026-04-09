@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import ArchiveGroups from '../../components/ArchiveGroups.astro';
+import SearchToolbar from '../../components/SearchToolbar.astro';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<MainLayout title="归档" description="Astro 博客文章归档">
+	<SearchToolbar placeholder="搜索归档文章..." />
+	<section class="section-card">
+		<div class="section-card__head">
+			<h1>归档</h1>
+			<span>{posts.length} 篇文章</span>
+		</div>
+		<ArchiveGroups posts={posts} />
+	</section>
+</MainLayout>

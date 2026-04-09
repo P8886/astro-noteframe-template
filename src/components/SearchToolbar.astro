@@ -1,0 +1,70 @@
+---
+interface Props {
+	placeholder?: string;
+}
+
+const { placeholder = '搜索文章、分类或关键词...' } = Astro.props;
+---
+
+<section class="toolbar-card">
+	<label class="toolbar-card__search">
+		<svg viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M10.5 18a7.5 7.5 0 1 1 5.9-2.9L22 20.7l-1.4 1.4-5.6-5.6A7.46 7.46 0 0 1 10.5 18Z" fill="currentColor"></path>
+		</svg>
+		<input type="search" placeholder={placeholder} data-post-search />
+	</label>
+</section>
+
+<script is:inline>
+	const initSearch = () => {
+		document.querySelectorAll('[data-post-search]').forEach((input) => {
+			const container = input.closest('.page-content');
+			if (!container) return;
+			const emptyStateId = 'post-search-empty';
+			const getItems = () => Array.from(container.querySelectorAll('[data-search-text]'));
+			const ensureEmptyState = () => {
+				const host = container.querySelector('.post-list, .archive-groups');
+				if (!host) return null;
+				let emptyState = container.querySelector(`#${emptyStateId}`);
+				if (!emptyState) {
+					emptyState = document.createElement('p');
+					emptyState.id = emptyStateId;
+					emptyState.className = 'post-list__empty';
+					emptyState.textContent = '没有找到匹配的文章。';
+					emptyState.hidden = true;
+					host.appendChild(emptyState);
+				}
+				return emptyState;
+			};
+
+			const filterPosts = (keyword) => {
+				const normalized = keyword.trim().toLowerCase();
+				let visibleCount = 0;
+				getItems().forEach((item) => {
+					const text = item.getAttribute('data-search-text') ?? '';
+					const matched = !normalized || text.includes(normalized);
+					item.style.display = matched ? '' : 'none';
+					if (matched) visibleCount += 1;
+				});
+				container.querySelectorAll('.archive-group').forEach((group) => {
+					const hasVisibleItems = Array.from(group.querySelectorAll('.archive-item')).some(
+						(item) => item.style.display !== 'none',
+					);
+					group.style.display = hasVisibleItems ? '' : 'none';
+				});
+				const emptyState = ensureEmptyState();
+				if (emptyState) emptyState.hidden = visibleCount !== 0;
+			};
+
+			input.addEventListener('input', (event) => {
+				filterPosts(event.currentTarget.value);
+			});
+		});
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initSearch, { once: true });
+	} else {
+		initSearch();
+	}
+</script>

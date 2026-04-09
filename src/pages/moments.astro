@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import PostList from '../components/PostList.astro';
+import SearchToolbar from '../components/SearchToolbar.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+
+const posts = (await getCollection('blog'))
+	.filter((post) => post.data.type === 'short')
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<MainLayout title="说说" description="一些短一点的记录和牢骚">
+	<SearchToolbar placeholder="搜索说说..." />
+	<section class="section-card">
+		<div class="section-card__head">
+			<h1>说说</h1>
+			<span>{posts.length} 条</span>
+		</div>
+		<PostList posts={posts} />
+	</section>
+</MainLayout>

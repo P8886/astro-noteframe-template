@@ -1,0 +1,25 @@
+---
+interface Props {
+	date: Date;
+	showTime?: boolean;
+}
+
+const { date, showTime = false } = Astro.props;
+---
+
+<time datetime={date.toISOString()}>
+	{
+		date.toLocaleString('zh-CN', {
+			year: 'numeric',
+			month: '2-digit',
+			day: 'numeric',
+			...(showTime
+				? {
+						hour: '2-digit',
+						minute: '2-digit',
+						hour12: false,
+					}
+				: {}),
+		})
+	}
+</time>
