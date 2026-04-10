@@ -5,6 +5,19 @@ export interface ContentDateValue {
 
 export const parseContentDate = (input: string | Date): ContentDateValue => {
 	if (input instanceof Date) {
+		const isYamlDateOnly =
+			input.getUTCHours() === 0 &&
+			input.getUTCMinutes() === 0 &&
+			input.getUTCSeconds() === 0 &&
+			input.getUTCMilliseconds() === 0;
+
+		if (isYamlDateOnly) {
+			return {
+				value: new Date(input.getUTCFullYear(), input.getUTCMonth(), input.getUTCDate()),
+				hasExplicitTime: false,
+			};
+		}
+
 		return {
 			value: input,
 			hasExplicitTime: true,
