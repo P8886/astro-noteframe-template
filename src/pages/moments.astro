@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import PostList from '../components/PostList.astro';
 import SearchToolbar from '../components/SearchToolbar.astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import { getComparableTime } from '../utils/dates';
 
 const posts = (await getCollection('blog'))
 	.filter((post) => post.data.type === 'short')
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+	.sort((a, b) => getComparableTime(b.data.pubDate) - getComparableTime(a.data.pubDate));
 ---
 
 <MainLayout title="说说" description="一些短一点的记录和牢骚">

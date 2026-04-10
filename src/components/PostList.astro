@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { formatMonthDayTime } from '../utils/dates';
 
 interface Props {
 	posts: CollectionEntry<'blog'>[];
@@ -24,7 +25,7 @@ const typeLabel = {
 					<h3>{post.data.title}</h3>
 					<p>{post.data.description}</p>
 					<div class="post-item__meta">
-						<span>{post.data.pubDate.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+						<span>{formatMonthDayTime(post.data.pubDate)}</span>
 						<span class:list={['type-badge', post.data.type === 'short' ? 'type-badge--short' : 'type-badge--note']}>
 							{typeLabel[post.data.type]}
 						</span>

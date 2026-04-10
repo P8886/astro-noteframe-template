@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { formatMonthDay, formatTime } from '../utils/dates';
 
 interface Props {
 	posts: CollectionEntry<'blog'>[];
@@ -8,7 +9,7 @@ interface Props {
 const { posts } = Astro.props;
 const groups = Object.entries(
 	posts.reduce<Record<string, CollectionEntry<'blog'>[]>>((acc, post) => {
-		const year = String(post.data.pubDate.getFullYear());
+		const year = String(post.data.pubDate.value.getFullYear());
 		acc[year] ??= [];
 		acc[year].push(post);
 		return acc;
@@ -35,8 +36,8 @@ const typeLabel = {
 								data-search-text={`${post.data.title} ${post.data.description} ${post.data.tags?.join(' ') ?? ''} ${typeLabel[post.data.type]}`.toLowerCase()}
 							>
 								<div class="archive-item__date">
-									<span>{post.data.pubDate.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit' })}</span>
-									<time>{post.data.pubDate.toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })}</time>
+									<span>{formatMonthDay(post.data.pubDate)}</span>
+									{post.data.pubDate.hasExplicitTime && <time>{formatTime(post.data.pubDate)}</time>}
 								</div>
 								<div class="archive-item__main">
 									<div class="archive-item__tags">

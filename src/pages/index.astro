@@ -5,9 +5,10 @@ import PostList from '../components/PostList.astro';
 import SearchToolbar from '../components/SearchToolbar.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getComparableTime } from '../utils/dates';
 
 const posts = (await getCollection('blog'))
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.sort((a, b) => getComparableTime(b.data.pubDate) - getComparableTime(a.data.pubDate))
 	.slice(0, 5);
 ---
 
