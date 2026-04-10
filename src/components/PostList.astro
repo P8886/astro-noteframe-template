@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { formatMonthDayTime } from '../utils/dates';
+import { formatMonthDayTime, resolveContentDate } from '../utils/dates';
 
 interface Props {
 	posts: CollectionEntry<'blog'>[];
@@ -11,6 +11,8 @@ const typeLabel = {
 	note: '笔记',
 	short: '说说',
 };
+
+const getPubDate = (post: CollectionEntry<'blog'>) => resolveContentDate(post.data.pubDate, post.filePath, 'pubDate');
 ---
 
 <div class="post-list">
@@ -25,7 +27,7 @@ const typeLabel = {
 					<h3>{post.data.title}</h3>
 					<p>{post.data.description}</p>
 					<div class="post-item__meta">
-						<span>{formatMonthDayTime(post.data.pubDate)}</span>
+						<span>{formatMonthDayTime(getPubDate(post))}</span>
 						<span class:list={['type-badge', post.data.type === 'short' ? 'type-badge--short' : 'type-badge--note']}>
 							{typeLabel[post.data.type]}
 						</span>

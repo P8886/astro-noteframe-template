@@ -4,11 +4,16 @@ import BaseHead from '../components/BaseHead.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Sidebar from '../components/Sidebar.astro';
 import TwikooComments from '../components/TwikooComments.astro';
+import { resolveContentDate } from '../utils/dates';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, tags = [], heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, tags = [], heroImage, entryFilePath } = Astro.props;
 const typeLabel = Astro.props.type === 'short' ? '说说' : '笔记';
+const resolvedPubDate = resolveContentDate(pubDate, entryFilePath, 'pubDate');
+const resolvedUpdatedDate = updatedDate
+	? resolveContentDate(updatedDate, entryFilePath, 'updatedDate')
+	: undefined;
 ---
 
 <html lang="zh-CN">
@@ -25,10 +30,10 @@ const typeLabel = Astro.props.type === 'short' ? '说说' : '笔记';
 						<h1>{title}</h1>
 						<p class="article-card__desc">{description}</p>
 						<div class="article-card__meta">
-							<span><FormattedDate date={pubDate} showTime={true} /></span>
+							<span><FormattedDate date={resolvedPubDate} showTime={true} /></span>
 							{
-								updatedDate && (
-									<span>更新于 <FormattedDate date={updatedDate} showTime={true} /></span>
+								resolvedUpdatedDate && (
+									<span>更新于 <FormattedDate date={resolvedUpdatedDate} showTime={true} /></span>
 								)
 							}
 						</div>

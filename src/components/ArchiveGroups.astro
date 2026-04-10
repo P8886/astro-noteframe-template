@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { formatMonthDay, formatTime } from '../utils/dates';
+import { formatMonthDay, formatTime, resolveContentDate } from '../utils/dates';
 
 interface Props {
 	posts: CollectionEntry<'blog'>[];
@@ -20,6 +20,8 @@ const typeLabel = {
 	note: '笔记',
 	short: '说说',
 };
+
+const getPubDate = (post: CollectionEntry<'blog'>) => resolveContentDate(post.data.pubDate, post.filePath, 'pubDate');
 ---
 
 <div class="archive-groups">
@@ -29,27 +31,30 @@ const typeLabel = {
 				<h2 class="archive-group__year">{year}年</h2>
 				<div class="archive-group__list">
 					{
-						yearPosts.map((post) => (
-							<a
-								class="archive-item"
-								href={`/blog/${post.id}/`}
-								data-search-text={`${post.data.title} ${post.data.description} ${post.data.tags?.join(' ') ?? ''} ${typeLabel[post.data.type]}`.toLowerCase()}
-							>
-								<div class="archive-item__date">
-									<span>{formatMonthDay(post.data.pubDate)}</span>
-									{post.data.pubDate.hasExplicitTime && <time>{formatTime(post.data.pubDate)}</time>}
-								</div>
-								<div class="archive-item__main">
-									<div class="archive-item__tags">
-										<span class:list={['type-badge', post.data.type === 'short' ? 'type-badge--short' : 'type-badge--note']}>
-											{typeLabel[post.data.type]}
-										</span>
-										{post.data.tags.map((tag) => <span class="archive-tag">{tag}</span>)}
+						yearPosts.map((post) => {
+							const pubDate = getPubDate(post);
+							return (
+								<a
+									class="archive-item"
+									href={`/blog/${post.id}/`}
+									data-search-text={`${post.data.title} ${post.data.description} ${post.data.tags?.join(' ') ?? ''} ${typeLabel[post.data.type]}`.toLowerCase()}
+								>
+									<div class="archive-item__date">
+										<span>{formatMonthDay(pubDate)}</span>
+										{pubDate.hasExplicitTime && <time>{formatTime(pubDate)}</time>}
 									</div>
-									<h3>{post.data.title}</h3>
-								</div>
-							</a>
-						))
+									<div class="archive-item__main">
+										<div class="archive-item__tags">
+											<span class:list={['type-badge', post.data.type === 'short' ? 'type-badge--short' : 'type-badge--note']}>
+												{typeLabel[post.data.type]}
+											</span>
+											{post.data.tags.map((tag) => <span class="archive-tag">{tag}</span>)}
+										</div>
+										<h3>{post.data.title}</h3>
+									</div>
+								</a>
+							);
+						})
 					}
 				</div>
 			</section>
