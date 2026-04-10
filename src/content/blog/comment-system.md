@@ -1,6 +1,6 @@
 ---
 title: 评论系统为什么切到 Twikoo
-description: 因为它更适合你现在这种偏 Cloudflare 的部署路线，同时也支持邮件通知。
+description: 部署方便，同时也支持邮件通知。
 pubDate: 2026-04-08
 type: note
 tags:

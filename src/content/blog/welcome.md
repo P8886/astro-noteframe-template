@@ -22,4 +22,4 @@ heroImage: ../../assets/blog-placeholder-1.jpg
 - 摄影或作品页
 - 独立的归档页与搜索页
 
-评论部分我已经预留了 Waline，后续只需要补评论服务地址和邮件 SMTP 配置。
+评论部分我已经预留了 Twikoo，后续只需要补评论服务地址和邮件 SMTP 配置。
