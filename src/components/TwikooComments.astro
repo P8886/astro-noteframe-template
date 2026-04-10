@@ -4,17 +4,17 @@ const path = Astro.props.path ?? Astro.url.pathname;
 ---
 
 <section class="comment-panel">
-	<h2>评论</h2>
-	<p class="comment-panel__hint">
-		支持昵称、邮箱、个人网站。回复通知可通过 Twikoo 的邮件配置实现。
-	</p>
 	{
 		envId ? (
-			<div id="twikoo" />
+			<div class="comment-panel__shell">
+				<div id="twikoo-container" />
+			</div>
 		) : (
-			<div class="comment-panel__empty">
+			<div class="comment-panel__shell">
+				<div class="comment-panel__empty">
 				<p>还没有配置评论服务。</p>
 				<p>在 `.env` 中设置 `PUBLIC_TWIKOO_ENV_ID` 后即可启用。</p>
+				</div>
 			</div>
 		)
 	}
@@ -24,10 +24,10 @@ const path = Astro.props.path ?? Astro.url.pathname;
 	envId && (
 		<script is:inline define:vars={{ envId, path }}>
 			const loadTwikoo = async () => {
-				if (window.twikoo) {
+				if (window.twikoo?.init) {
 					window.twikoo.init({
 						envId,
-						el: '#twikoo',
+						el: '#twikoo-container',
 						path,
 						lang: 'zh-CN',
 					});
@@ -37,12 +37,14 @@ const path = Astro.props.path ?? Astro.url.pathname;
 				const script = document.createElement('script');
 				script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js';
 				script.onload = () => {
-					window.twikoo.init({
-						envId,
-						el: '#twikoo',
-						path,
-						lang: 'zh-CN',
-					});
+					if (window.twikoo?.init) {
+						window.twikoo.init({
+							envId,
+							el: '#twikoo-container',
+							path,
+							lang: 'zh-CN',
+						});
+					}
 				};
 				document.body.appendChild(script);
 			};

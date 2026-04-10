@@ -1,5 +1,13 @@
 ---
 import { NAV_LINKS, SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_EMAIL, SITE_SUBTITLE, SITE_TAGLINE, SITE_TITLE, SOCIAL_LINKS } from '../consts';
+
+const normalizePath = (value: string) => {
+	if (!value) return '/';
+	const trimmed = value.replace(/\/+$/, '');
+	return trimmed === '' ? '/' : trimmed;
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
 ---
 
 <div class="mobile-bar">
@@ -9,9 +17,17 @@ import { NAV_LINKS, SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_EMAIL, SITE
 	</button>
 	<a class="mobile-bar__brand" href="/">{SITE_TITLE}</a>
 	<button class="icon-button icon-button--theme" type="button" data-theme-toggle aria-label="切换夜间模式">
-		<svg viewBox="0 0 24 24" aria-hidden="true">
-			<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" fill="currentColor"></path>
-		</svg>
+		<span class="theme-switch__icon theme-switch__icon--moon" aria-hidden="true">
+			<svg viewBox="0 0 24 24">
+				<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" fill="currentColor"></path>
+			</svg>
+		</span>
+		<span class="theme-switch__icon theme-switch__icon--sun" aria-hidden="true">
+			<svg viewBox="0 0 24 24">
+				<circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+				<path d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.72 5.28l-2.12 2.12M7.4 16.6l-2.12 2.12M18.72 18.72l-2.12-2.12M7.4 7.4 5.28 5.28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+			</svg>
+		</span>
 	</button>
 </div>
 
@@ -25,13 +41,21 @@ import { NAV_LINKS, SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_EMAIL, SITE
 				<p class="sidebar__tagline">{SITE_TAGLINE}</p>
 			</div>
 		</div>
-		<p class="sidebar__subtitle">{SITE_SUBTITLE}</p>
-		<p class="sidebar__desc">{SITE_DESCRIPTION}</p>
+		{SITE_SUBTITLE && <p class="sidebar__subtitle">{SITE_SUBTITLE}</p>}
+		{SITE_DESCRIPTION && <p class="sidebar__desc">{SITE_DESCRIPTION}</p>}
 		<nav class="sidebar__nav" aria-label="Primary">
 			{
 				NAV_LINKS.map((item) => (
-					<a class:list={['sidebar__link', { active: Astro.url.pathname === item.href }]} href={item.href}>
-						<span class="sidebar__icon" aria-hidden="true">
+					<a
+						class:list={[
+							'sidebar__link',
+							{
+								active: currentPath === normalizePath(item.href),
+							},
+						]}
+						href={item.href}
+					>
+						<span class:list={['sidebar__icon', `sidebar__icon--${item.icon}`]} aria-hidden="true">
 							{
 								item.icon === 'home' && (
 									<svg viewBox="0 0 24 24"><path d="M4.5 10.5 12 4.5l7.5 6V19a1.5 1.5 0 0 1-1.5 1.5h-3.75V15h-4.5v5.5H6A1.5 1.5 0 0 1 4.5 19Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -58,7 +82,7 @@ import { NAV_LINKS, SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_EMAIL, SITE
 								)
 							}
 						</span>
-						{item.label}
+						<span class="sidebar__label">{item.label}</span>
 					</a>
 				))
 			}
@@ -71,8 +95,18 @@ import { NAV_LINKS, SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_EMAIL, SITE
 			}
 		</div>
 		<div class="sidebar__footer">
-			<button class="theme-switch" type="button" data-theme-toggle>
-				<span>切换颜色</span>
+			<button class="theme-switch" type="button" data-theme-toggle aria-label="切换主题">
+				<span class="theme-switch__icon theme-switch__icon--moon" aria-hidden="true">
+					<svg viewBox="0 0 24 24">
+						<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" fill="currentColor"></path>
+					</svg>
+				</span>
+				<span class="theme-switch__icon theme-switch__icon--sun" aria-hidden="true">
+					<svg viewBox="0 0 24 24">
+						<circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+						<path d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.72 5.28l-2.12 2.12M7.4 16.6l-2.12 2.12M18.72 18.72l-2.12-2.12M7.4 7.4 5.28 5.28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+					</svg>
+				</span>
 			</button>
 		</div>
 	</div>
